@@ -10968,14 +10968,14 @@ const SPRITES = [taoSprite(1.02, 140), taoSprite(.96, 136), taoSprite(1.08, 145)
       </div>
       <span class="dalabs-brand-glint" aria-hidden="true"></span>
       <p class="dalabs-follow">theo dõi chúng mình tại</p>
-      <a class="dalabs-tiktok" href="https://www.tiktok.com/@edgy.gb" target="_blank" rel="noopener noreferrer" aria-label="Theo dõi trungkz trên TikTok">
+      <a class="dalabs-tiktok" href="https://www.tiktok.com/@ttrung9097" target="_blank" rel="noopener noreferrer" aria-label="Theo dõi trungkz trên TikTok">
         <svg viewBox="0 0 48 48" width="30" height="30" aria-hidden="true" focusable="false">
           <path d="M29 6h6c.4 5 3.1 8.3 8 9v6.4a19 19 0 0 1-8-2.4v11.6C35 39.7 27 44 20 42c-7.5-2.1-10.5-11-6.5-17.2C16 21 20 19.3 25 19.8V26c-5.5-1.1-9.5 3.2-7.2 8.4 2.5 5.5 11 3.1 11-3.5V6Z" transform="translate(-1.6,1.5)" fill="#42f5ee"/>
           <path d="M29 6h6c.4 5 3.1 8.3 8 9v6.4a19 19 0 0 1-8-2.4v11.6C35 39.7 27 44 20 42c-7.5-2.1-10.5-11-6.5-17.2C16 21 20 19.3 25 19.8V26c-5.5-1.1-9.5 3.2-7.2 8.4 2.5 5.5 11 3.1 11-3.5V6Z" transform="translate(1.5,-.3)" fill="#ff79a9"/>
           <path d="M29 6h6c.4 5 3.1 8.3 8 9v6.4a19 19 0 0 1-8-2.4v11.6C35 39.7 27 44 20 42c-7.5-2.1-10.5-11-6.5-17.2C16 21 20 19.3 25 19.8V26c-5.5-1.1-9.5 3.2-7.2 8.4 2.5 5.5 11 3.1 11-3.5V6Z" fill="white"/>
         </svg>
         <span>TikTok</span>
-        <span class="dalabs-handle">@edgy.gb</span>
+        <span class="dalabs-handle">@ttrung9097</span>
         <span aria-hidden="true">↗</span>
       </a>
     </footer>
@@ -11293,6 +11293,307 @@ if(window.TINY_PERF && !window.TINY_PERF.mobile){
   const sync=()=>root.classList.toggle('tiny-pc-beauty-v12',stage.classList.contains('hien-thi'));
   new MutationObserver(sync).observe(stage,{attributes:true,attributeFilter:['class']});
   sync();
+})();
+</script>
+
+<!-- ===== Tiny extra effects v1: lớp hiệu ứng thêm (quầng sáng con trỏ, đom đóm, vệt sao, vệt sáng thẻ sản phẩm) ===== -->
+<style id="tiny-extra-effects-v1">
+/* Nền đen "thở" nhẹ: ba quầng màu trôi rất chậm, chỉ thêm sáng nên không che nội dung. */
+#tiny-fx-aurora{position:fixed;inset:-12%;z-index:89;pointer-events:none;opacity:0;
+  transition:opacity 2.6s ease;mix-blend-mode:screen;will-change:transform;
+  background:
+    radial-gradient(38% 42% at 22% 28%,rgba(88,224,255,.11),transparent 70%),
+    radial-gradient(34% 38% at 78% 72%,rgba(255,132,214,.10),transparent 72%),
+    radial-gradient(30% 34% at 62% 16%,rgba(150,255,232,.07),transparent 74%);
+  animation:tinyFxAurora 28s ease-in-out infinite alternate}
+body.tiny-fx-ready #tiny-fx-aurora{opacity:1}
+@keyframes tinyFxAurora{
+  from{transform:translate3d(-1.6%,-1.1%,0) scale(1)}
+  to{transform:translate3d(1.6%,1.4%,0) scale(1.07)}
+}
+
+/* Vệt tối bốn góc: tăng chiều sâu khung hình, chỉ ăn vào rìa ngoài. */
+#tiny-fx-vignette{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:0;
+  transition:opacity 2.2s ease;
+  background:radial-gradient(140% 112% at 50% 46%,transparent 62%,rgba(3,6,16,.44) 100%)}
+body.tiny-fx-ready #tiny-fx-vignette{opacity:1}
+
+/* Quầng sáng bám theo con trỏ (chỉ khi có chuột thật). */
+#tiny-fx-cursor{position:fixed;left:0;top:0;width:460px;height:460px;margin:-230px 0 0 -230px;
+  border-radius:50%;pointer-events:none;z-index:91;opacity:0;contain:strict;
+  background:radial-gradient(circle,rgba(140,245,255,.20) 0%,rgba(255,150,225,.12) 40%,transparent 68%);
+  mix-blend-mode:screen;will-change:transform,opacity;transition:opacity .6s ease}
+body.tiny-fx-cursor-on #tiny-fx-cursor{opacity:1}
+
+/* Canvas hạt: đom đóm, vệt sao theo tay, nổ sao khi bấm. */
+#tiny-fx-canvas{position:fixed;inset:0;z-index:92;width:100%;height:100%;display:block;pointer-events:none}
+body.tiny-fx-blend #tiny-fx-canvas{mix-blend-mode:screen}
+
+/* Thẻ sản phẩm: nâng nhẹ, ảnh phóng khẽ và một vệt sáng quét qua khi rê. */
+#tiny-shop-scene .shop-product{position:relative;overflow:hidden;isolation:isolate;
+  transition:transform .34s cubic-bezier(.2,.8,.25,1),background .34s ease,border-color .34s ease,box-shadow .34s ease,filter .34s ease}
+#tiny-shop-scene .shop-product::after{content:'';position:absolute;top:-60%;left:-70%;width:46%;height:220%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.42),transparent);
+  transform:rotate(14deg) translateX(-40%);opacity:0;pointer-events:none}
+#tiny-shop-scene .shop-product:hover,#tiny-shop-scene .shop-product:focus-visible{
+  transform:translateY(-7px) scale(1.018);
+  filter:saturate(1.08) brightness(1.07);
+  box-shadow:0 15px 36px color-mix(in srgb,var(--stall-accent) 30%,transparent),
+             0 0 24px color-mix(in srgb,var(--stall-accent) 22%,transparent),
+             inset 0 1px rgba(255,255,255,.18)}
+#tiny-shop-scene .shop-product:hover::after,#tiny-shop-scene .shop-product:focus-visible::after{
+  opacity:1;animation:tinyFxShine .95s cubic-bezier(.3,.7,.3,1)}
+@keyframes tinyFxShine{
+  from{transform:rotate(14deg) translateX(-40%)}
+  to{transform:rotate(14deg) translateX(420%)}
+}
+#tiny-shop-scene .shop-product-thumb img{transition:transform .5s cubic-bezier(.2,.8,.25,1),filter .5s ease}
+#tiny-shop-scene .shop-product:hover .shop-product-thumb img,
+#tiny-shop-scene .shop-product:focus-visible .shop-product-thumb img{transform:scale(1.07)}
+
+/* Nút mua: nhịp thở nhẹ khi rê chuột. */
+#tiny-shop-scene .shop-modal-buy:hover,#tiny-shop-scene .shop-modal-buy:focus-visible{
+  animation:tinyFxButtonPulse 1.5s ease-in-out infinite}
+@keyframes tinyFxButtonPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,183,232,.42)}
+  50%{box-shadow:0 0 22px 6px rgba(255,183,232,.34)}
+}
+
+@media (prefers-reduced-motion: reduce){
+  #tiny-fx-aurora,#tiny-fx-cursor{display:none}
+  #tiny-fx-canvas,#tiny-shop-scene .shop-product::after{display:none}
+}
+</style>
+<script id="tiny-extra-effects-v1-script">
+/* Lớp hiệu ứng thêm, chạy độc lập sau cùng. Không sửa đổi logic kể chuyện/âm thanh.
+   Tự hạ tải trên thiết bị cảm ứng hoặc máy yếu theo window.TINY_PERF. */
+(() => {
+  'use strict';
+  const perf = window.TINY_PERF || {};
+  const body = document.body;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const touch = matchMedia('(pointer:coarse)').matches;
+  const mobile = !!perf.mobile || (touch && matchMedia('(max-width:900px)').matches);
+  const lite = !!perf.lite || mobile;
+  const dprFor = perf.canvasDpr || ((w, h, m) => Math.min(devicePixelRatio || 1, m || 1.5));
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const COLORS = ['#c9f9ff', '#ffe0f6', '#fff2c4', '#b6ffef'];
+  const TAU = Math.PI * 2;
+
+  /* 1. Lớp nền: quầng màu trôi + vệt tối bốn góc */
+  const vign = document.createElement('div');
+  vign.id = 'tiny-fx-vignette';
+  vign.setAttribute('aria-hidden', 'true');
+  body.appendChild(vign);
+  if (!mobile) {
+    const aurora = document.createElement('div');
+    aurora.id = 'tiny-fx-aurora';
+    aurora.setAttribute('aria-hidden', 'true');
+    body.appendChild(aurora);
+  }
+  requestAnimationFrame(() => body.classList.add('tiny-fx-ready'));
+  if (reduce) return;
+
+  /* 2. Canvas hạt */
+  const cv = document.createElement('canvas');
+  cv.id = 'tiny-fx-canvas';
+  cv.setAttribute('aria-hidden', 'true');
+  body.appendChild(cv);
+  const ctx = cv.getContext('2d', { alpha: true });
+  if (!ctx) return;
+  if (!mobile) body.classList.add('tiny-fx-blend');
+
+  let W = 1, H = 1;
+  function resize() {
+    W = innerWidth; H = innerHeight;
+    const d = dprFor(W, H, 1.5);
+    cv.width = Math.round(W * d); cv.height = Math.round(H * d);
+    ctx.setTransform(d, 0, 0, d, 0, 0);
+  }
+  resize();
+  addEventListener('resize', resize, { passive: true });
+
+  const motes = [], trail = [], bursts = [], streaks = [];
+
+  /* Đom đóm trôi lững lờ khắp trang */
+  const moteCount = mobile ? 0 : lite ? 10 : 20;
+  for (let i = 0; i < moteCount; i++) {
+    motes.push({
+      x: rnd(0, 1), y: rnd(0, 1), r: rnd(.9, 2.4),
+      a: rnd(.16, .5), vx: rnd(-.05, .05), vy: rnd(-.14, -.03),
+      ph: rnd(0, TAU), sp: rnd(1.4, 3.2), c: COLORS[i % COLORS.length]
+    });
+  }
+
+  /* 3. Quầng sáng theo con trỏ */
+  if (!touch) {
+    const cur = document.createElement('div');
+    cur.id = 'tiny-fx-cursor';
+    cur.setAttribute('aria-hidden', 'true');
+    body.appendChild(cur);
+    if (matchMedia('(hover:hover)').matches) body.classList.add('tiny-fx-cursor-on');
+    let cx = innerWidth / 2, cy = innerHeight / 2, tx = cx, ty = cy, animating = false;
+    function follow() {
+      cx += (tx - cx) * .13; cy += (ty - cy) * .13;
+      cur.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
+      if (Math.abs(tx - cx) > .3 || Math.abs(ty - cy) > .3) requestAnimationFrame(follow);
+      else animating = false;
+    }
+    addEventListener('pointermove', e => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      tx = e.clientX; ty = e.clientY;
+      if (!animating) { animating = true; requestAnimationFrame(follow); }
+      sparkleTrail(e.clientX, e.clientY);
+    }, { passive: true });
+  }
+
+  /* 4. Vệt sao rơi lại sau con trỏ */
+  let lastTrail = 0;
+  function sparkleTrail(x, y) {
+    if (mobile) return;
+    const now = performance.now();
+    if (now - lastTrail < (lite ? 170 : 65)) return;
+    lastTrail = now;
+    const n = lite ? 1 : 2;
+    for (let i = 0; i < n; i++) {
+      trail.push({
+        x: x + rnd(-4, 4), y: y + rnd(-4, 4), vx: rnd(-.35, .35), vy: rnd(-.5, .1),
+        r: rnd(.8, 1.9), life: 1, decay: rnd(.012, .022),
+        c: COLORS[(Math.random() * COLORS.length) | 0]
+      });
+    }
+    if (trail.length > 140) trail.splice(0, trail.length - 140);
+    wake();
+  }
+
+  /* 5. Bấm/chạm: một vòng sao nhỏ bung ra */
+  addEventListener('pointerdown', e => {
+    const count = mobile ? 9 : 14;
+    const parts = [];
+    for (let i = 0; i < count; i++) {
+      parts.push({
+        a: (i / count) * TAU + rnd(-.2, .2), v: rnd(24, 70),
+        spin: rnd(-4, 4), r: rnd(1.6, 3.4), c: COLORS[i % COLORS.length]
+      });
+    }
+    bursts.push({ x: e.clientX, y: e.clientY, parts, t0: performance.now(), dur: 900 });
+    wake();
+  }, { passive: true });
+
+  /* Thỉnh thoảng một tia sao vụt ngang */
+  const hasMotes = motes.length > 0;
+  if (hasMotes) {
+    setInterval(() => {
+      if (document.hidden) return;
+      const fromLeft = Math.random() < .5;
+      const y0 = rnd(H * .06, H * .5);
+      streaks.push({
+        x: fromLeft ? -60 : W + 60, y: y0, vx: (fromLeft ? 1 : -1) * rnd(.55, .95),
+        vy: rnd(.14, .3), life: 1, len: rnd(70, 150)
+      });
+    }, 6500);
+  }
+
+  function star(c, r) {
+    c.beginPath();
+    for (let k = 0; k < 8; k++) {
+      const ang = k * Math.PI / 4, rr = k % 2 ? r * .36 : r * 1.9;
+      const px = Math.cos(ang) * rr, py = Math.sin(ang) * rr;
+      k ? c.lineTo(px, py) : c.moveTo(px, py);
+    }
+    c.closePath(); c.fill();
+  }
+
+  /* 6. Vòng vẽ */
+  const frameMs = 1000 / Math.max(24, Math.min(60, perf.ambientFps || 60));
+  let running = false, last = 0;
+
+  function wake() {
+    if (!running) { running = true; last = performance.now(); requestAnimationFrame(loop); }
+  }
+
+  function loop(t) {
+    if (t - last < frameMs) { requestAnimationFrame(loop); return; }
+    const dt = Math.min(48, t - last) || 16;
+    last = t;
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+
+    for (const m of motes) {
+      m.ph += m.sp * dt / 1000;
+      m.x += m.vx * dt / 1000 * 60;
+      m.y += m.vy * dt / 1000 * 60;
+      if (m.x < -.05) m.x = 1.05; else if (m.x > 1.05) m.x = -.05;
+      if (m.y < -.05) m.y = 1.05; else if (m.y > 1.05) m.y = -.05;
+      const px = m.x * W, py = m.y * H + Math.sin(m.ph) * 14;
+      const al = m.a * (.45 + .55 * Math.abs(Math.sin(m.ph * .8)));
+      ctx.fillStyle = m.c;
+      ctx.globalAlpha = al;
+      ctx.beginPath(); ctx.arc(px, py, m.r, 0, TAU); ctx.fill();
+      ctx.globalAlpha = al * .16;
+      ctx.beginPath(); ctx.arc(px, py, m.r * 3.4, 0, TAU); ctx.fill();
+    }
+
+    for (let i = trail.length - 1; i >= 0; i--) {
+      const p = trail[i];
+      p.x += p.vx * dt / 16; p.y += p.vy * dt / 16;
+      p.vy -= .004 * dt / 16;
+      p.life -= dt / 1100;
+      if (p.life <= 0 || p.y < -24 || p.x < -24 || p.x > W + 24) { trail.splice(i, 1); continue; }
+      const k = Math.max(0, p.life);
+      ctx.fillStyle = p.c;
+      ctx.globalAlpha = k * .85;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (.5 + k * .7), 0, TAU); ctx.fill();
+      ctx.globalAlpha = k * .16;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4, 0, TAU); ctx.fill();
+    }
+
+    for (let i = streaks.length - 1; i >= 0; i--) {
+      const s = streaks[i];
+      s.x += s.vx * dt; s.y += s.vy * dt;
+      s.life -= dt / 1500;
+      if (s.life <= 0 || s.x < -200 || s.x > W + 200) { streaks.splice(i, 1); continue; }
+      const k = Math.max(0, s.life);
+      const g = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * s.len * 3, s.y - s.vy * s.len * 3);
+      g.addColorStop(0, 'rgba(220,252,255,' + (k * .75).toFixed(3) + ')');
+      g.addColorStop(1, 'rgba(160,240,255,0)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5; ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x - s.vx * s.len * 3, s.y - s.vy * s.len * 3);
+      ctx.stroke();
+    }
+
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      const e = (t - b.t0) / b.dur;
+      if (e >= 1) { bursts.splice(i, 1); continue; }
+      const fade = 1 - e;
+      for (const pt of b.parts) {
+        const d = pt.v * e * (1 - e * .35);
+        ctx.globalAlpha = fade * .9;
+        ctx.fillStyle = pt.c;
+        ctx.save();
+        ctx.translate(b.x + Math.cos(pt.a) * d, b.y + Math.sin(pt.a) * d);
+        ctx.rotate(pt.spin * e);
+        star(ctx, pt.r * (.6 + fade * .7));
+        ctx.restore();
+      }
+      ctx.globalAlpha = fade * .3;
+      ctx.strokeStyle = '#d8fbff'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(b.x, b.y, 6 + 46 * e, 0, TAU); ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+    if (!hasMotes && !trail.length && !bursts.length && !streaks.length) { running = false; return; }
+    requestAnimationFrame(loop);
+  }
+
+  wake();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
 })();
 </script>
 </body>
